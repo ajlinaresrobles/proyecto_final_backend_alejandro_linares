@@ -18,8 +18,14 @@ router.get("/:pid",async(req, res)=>{
 
 router.get("/", async(req, res)=>{
         try {
+            const limit = parseInt(req.query.limit);
             const products = await productManager.getProducts();
-            res.json({status: "success", products: products}); 
+        if (!limit) {
+            return res.json({status: "success", products: products});
+        }
+            const limitedProducts = products.slice(0,limit);
+            res.json({status: "success", products: limitedProducts});
+            
         } catch (error) {
             res.status(500).json({status: "error", message: error.message});
         }        

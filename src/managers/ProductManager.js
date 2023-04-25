@@ -73,7 +73,7 @@ class ProductManager{
                 if (product) {
                     return product;
                 } else {
-                    return null;
+                    return new error("product with this id does not exist")
                 };
             } else{
                 throw new Error("There is no file");
