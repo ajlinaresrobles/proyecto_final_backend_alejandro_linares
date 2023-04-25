@@ -23,8 +23,13 @@ router.get("/", async(req, res)=>{
         if (!limit) {
             return res.json({status: "success", products: products});
         }
+
+        if (limit <= (products.length)) {
             const limitedProducts = products.slice(0,limit);
             res.json({status: "success", products: limitedProducts});
+        } else{  
+            res.status(400).json({status: "error", message:"limit is bigger than number of products", products: products});
+            }
             
         } catch (error) {
             res.status(500).json({status: "error", message: error.message});
@@ -35,7 +40,7 @@ router.post("/", async (req, res)=>{
     try {
         const {title, description, code, price, status, stock, category} = req.body;
         if (!title || !description || !code || !price || !status || !stock || !category ) {
-            return res.status(400).json({status: "error", message: "fields are not valid"})
+            return res.status(400).json({status: "error", message: "every key should be filled"})
         }
         const newProduct = req.body;
         const productAdded = await productManager.addProduct(newProduct);
@@ -51,7 +56,7 @@ router.put("/:pid", async(req, res)=>{
         const productId = req.params.pid;
         const {title, description, code, price, status, stock, category} = req.body;
         if (!title || !description || !code || !price || !status || !stock || !category ) {
-            return res.status(400).json({status: "error", message: "fields are not valid"})
+            return res.status(400).json({status: "error", message: "every key should be filled"})
         }
         
         const newData = req.body;   
