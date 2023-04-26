@@ -42,9 +42,18 @@ router.post("/", async (req, res)=>{
         if (!title || !description || !code || !price || !status || !stock || !category ) {
             return res.status(400).json({status: "error", message: "every key should be filled"})
         }
+    
         const newProduct = req.body;
+        const products = await productManager.getProducts();
+        const matchCode = products.some(element=>element.code === code);
+
+        if (matchCode) {
+            return res.status(400).json({status: "error", message: "there is another product using this code"});
+        } else {
+                
         const productAdded = await productManager.addProduct(newProduct);
         res.json({status: "success", product: productAdded});
+        }
     } catch (error) {
         res.status(500).json({status: "error", message: error.message});
     }
@@ -62,7 +71,7 @@ router.put("/:pid", async(req, res)=>{
         const newData = req.body;   
         const updatedProduct = await productManager.updateProducts(productId, newData);
         res.json({status: "success", message: "product updated", product: updatedProduct});
-
+        
 
     } catch (error) {
         res.status(400).json({status: "error", message: "there is not product with this id"});
