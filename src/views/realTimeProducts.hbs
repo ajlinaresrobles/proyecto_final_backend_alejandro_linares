@@ -1,0 +1,29 @@
+<h1>Página Real Time Products</h1>
+
+<h2>agregar Productos</h2>
+
+<input type="text" id= "title" placeholder="title"><br>
+<input type="text" id= "description" placeholder="description"><br>
+<input type="text" id= "category" placeholder="category"><br>
+<input type="text" id= "price" placeholder="price"><br>
+<input type="text" id= "thumbnail" placeholder="thumbnail"><br>
+<input type="text" id= "code" placeholder="code"><br>
+<input type="text" id= "status" placeholder="status"><br>
+<input type="text" id= "stock" placeholder="stock"><br>
+<button id="addProduct">agregar Producto</button>
+<hr>
+<h2>borrar Productos</h2>
+<input type="text" id= "id" placeholder="id">
+<button id="deleteProduct">borrar Producto</button>
+<hr>
+
+<ul>
+    {{#each products}}
+        <li>Nombre del Producto: {{this.title}} - Código: {{this.code}} - Precio: ${{this.price}}</li>
+    {{/each}}
+    
+</ul>
+
+
+<script src="socket.io/socket.io.js"></script>
+<script src="js/realTimeProducts.js"></script>
