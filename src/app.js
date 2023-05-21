@@ -6,7 +6,9 @@ import handlebars from "express-handlebars";
 import { viewsRouter } from "./routes/views.routes.js";
 import { __dirname } from "./utils.js";
 import path from "path";
-import { ProductManager } from "./managers/ProductManager.js";
+import { ProductManager } from "./dao/managers/ProductManager.js";
+import { connectDB } from "./config/dbConnection.js";
+
 const app = express();
 
 const port = 8080;
@@ -25,6 +27,8 @@ app.set('views', path.join(__dirname, "/views"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+
+connectDB();
 
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
