@@ -1,9 +1,14 @@
 import { Router } from "express";
 import { CartManager } from "../dao/managers/CartManager.js";
 import { ProductManager } from "../dao/managers/ProductManager.js";
+import { ProductsMongo } from "../dao/managers/ProductManagerMongo.js";
+import { CartsMongo } from "../dao/managers/CartManagerMongo.js";
 
-const cartManager = new CartManager("carts.json");
-const productManager = new ProductManager("products.json");
+// const cartManager = new CartManager("carts.json");
+// const productManager = new ProductManager("products.json");
+
+const cartManager = new CartsMongo();
+const productManager = new ProductsMongo();
 const router = Router();
 
 router.post("/", async(req, res)=>{

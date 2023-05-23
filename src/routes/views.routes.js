@@ -27,7 +27,15 @@ router.get("/realtimeproducts", async(req, res)=>{
     }   
 });
 
+router.get("/chat", async(req, res)=>{
 
+    try {
+        res.render("chat");
+        
+    } catch (error) {
+        res.status(500).json({status: "error", message: error.message});
+    }
+})
 
 
 

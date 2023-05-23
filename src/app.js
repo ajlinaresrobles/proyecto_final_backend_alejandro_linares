@@ -8,6 +8,7 @@ import { __dirname } from "./utils.js";
 import path from "path";
 import { ProductManager } from "./dao/managers/ProductManager.js";
 import { connectDB } from "./config/dbConnection.js";
+import { ChatMongo } from "./dao/managers/chat.mongo.js";
 
 const app = express();
 
@@ -65,6 +66,21 @@ socketServer.on("connection", async(socket)=>{
         
     })
 });
+
+const chatService = new ChatMongo();
+
+socketServer.on("connection", async(socket)=>{
+    const messages = await chatService.getMessages();
+    socketServer.emit("MessageHistory", messages);
+
+
+    socket.on("message", async(data)=>{
+        await chatService.addMessage(data);
+        const messages = await chatService.getMessages();
+        socketServer.emit("MessageHistory", messages);
+    })
+})
+
 
 
 
