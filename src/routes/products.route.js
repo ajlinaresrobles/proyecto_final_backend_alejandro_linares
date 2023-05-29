@@ -20,24 +20,66 @@ router.get("/:pid",async(req, res)=>{
 });
 
 router.get("/", async(req, res)=>{
-        try {
-            const limit = parseInt(req.query.limit);
-            const products = await productManager.getProducts();
-        if (!limit) {
-            return res.json({status: "success", products: products});
-        }
-
-        if (limit <= (products.length)) {
-            const limitedProducts = products.slice(0,limit);
-            res.json({status: "success", products: limitedProducts});
-        } else{  
-            res.status(400).json({status: "error", message:"limit is bigger than number of products", products: products});
+    try {
+        const {limit=10,page=1,sort,category, stock} = req.query;
+        if (!["asc", "desc"].includes(sort)) {
+            res.status(400).json({status: "error", message: "solo puede ser asc o desc"});
+        };
+        const sortValue = sort === "asc" ? 1 : -1;
+        const stockValue = stock === 0 ? undefined : parseInt(stock);
+        // console.log("limit: ", limit, "page: ", page, "sort: ", sortValue, "category: ", category, "stock: ", stock);    
+        let query = {};
+        if (category && stock){
+            query = {category: category, stock: stockValue}
+        }else{
+                if (category || stockValue) {
+                    if (category) {
+                        query={category: category}
+                    }else{
+                        query={stock: stockValue}
+                    }
+                }
             }
+            const baseUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+           const result= await productManager.getPaginate(query, {page, limit, sort:{price:sortValue}, lean: true});
+          
+           const response = {
+                status: "success",
+                payload: result.docs,
+                totalPages: result.totalPages,
+                prevPage: result.prevPage,
+                nextPage: result.nextPage,
+                page: result.page,
+                hasPrevPage: result.hasPrevPage,
+                hasNextPage: result.hasNextPage,
+                prevLink: result.hasPrevPage ? `${baseUrl}?page=${result.prevPage}` : null,
+                nextLink: result.hasNextPage ? `${baseUrl}?page=${result.nextPage}` : null
+           };
+           res.json(response);
+    } catch (error) {
+        res.status(500).json({status: "error", message: error.message});
+    }
+})
+
+// router.get("/", async(req, res)=>{
+//         try {
+//             const limit = parseInt(req.query.limit);
+//             const products = await productManager.getProducts();
+//         if (!limit) {
+//             return res.json({status: "success", products: products});
+//         }
+
+//         if (limit <= (products.length)) {
+//             const limitedProducts = products.slice(0,limit);
+//             res.json({status: "success", products: limitedProducts});
+//         } else{  
+//             res.status(400).json({status: "error", message:"limit is bigger than number of products", products: products});
+//             }
             
-        } catch (error) {
-            res.status(500).json({status: "error", message: error.message});
-        }        
-});
+//         } catch (error) {
+//             res.status(500).json({status: "error", message: error.message});
+//         }        
+// });
 
 router.post("/", async (req, res)=>{
     try {

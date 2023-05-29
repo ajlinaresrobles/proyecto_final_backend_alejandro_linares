@@ -6,7 +6,16 @@ export class ProductsMongo{
         this.model = productsModel;
     }
 
-        
+        async getPaginate(query={}, options={}){
+
+            try {
+                const result = await this.model.paginate(query, options);
+                return result;
+            } catch (error) {
+                throw new Error(`Error al obtener productos ${error.message}`);  
+            }
+        }
+
         async getProducts(){
             try {
                 const data = await this.model.find();
