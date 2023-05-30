@@ -19,6 +19,7 @@ export class ProductsMongo{
         async getProducts(){
             try {
                 const data = await this.model.find();
+                
                 return data
             } catch (error) {
                 throw new Error(`Error al obtener productos ${error.message}`);

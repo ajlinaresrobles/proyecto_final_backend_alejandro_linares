@@ -48,7 +48,7 @@ router.get("/products", async(req, res)=>{
         };
         const sortValue = sort === "asc" ? 1 : -1;
         const stockValue = stock === 0 ? undefined : parseInt(stock);
-        // console.log("limit: ", limit, "page: ", page, "sort: ", sortValue, "category: ", category, "stock: ", stock);    
+         
         let query = {};
         if (category && stock){
             query = {category: category, stock: stockValue}
@@ -84,6 +84,19 @@ router.get("/products", async(req, res)=>{
     }
 
 });
+
+router.get("/cart/:cid",async(req,res)=>{
+    try {
+        const cartId = req.params.cid;
+        const cart = await cartManager.getCartById(cartId);
+        res.render("cartFullInfo", cart);
+    } catch (error) {
+       
+        res.send(`<div>error al cargar esta vista</div>`);
+    }
+});
+
+
 
 export {router as viewsRouter};
 
