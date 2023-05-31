@@ -13,7 +13,8 @@ export class CartsMongo{
                 products:[]
             }
             const data = await this.model.create(cart);
-            return data
+            const response = JSON.parse(JSON.stringify(data));
+            return response;
         } catch (error) {
             throw new Error(`Error al crear el carrito ${error.message}`);
         }
@@ -21,10 +22,11 @@ export class CartsMongo{
 
     async getCartById(id){
         try {
-            const data = await this.model.findById(id).lean();
+            const data = await this.model.findById(id);
             if (!data) {
                 throw new Error(`cart with id: ${id} does not exist`);
-            }
+            };
+           
             return data
         } catch (error) {
             throw new Error(`Error al obtener carrito ${error.message}`);
