@@ -15,6 +15,7 @@ router.post("/", async(req, res)=>{
     try {
         const cartAdded = await cartManager.addCart();
         res.json({status: "success", cart: cartAdded});
+        console.log(cartAdded);
     } catch (error) {
         res.status(500).json({status: "error", message: error.message});
     }

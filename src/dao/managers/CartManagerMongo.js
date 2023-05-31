@@ -21,7 +21,7 @@ export class CartsMongo{
 
     async getCartById(id){
         try {
-            const data = await this.model.findById(id);
+            const data = await this.model.findById(id).lean();
             if (!data) {
                 throw new Error(`cart with id: ${id} does not exist`);
             }

@@ -98,6 +98,7 @@ router.post("/", async (req, res)=>{
                 
         const productAdded = await productManager.addProduct(newProduct);
         res.json({status: "success", product: productAdded});
+        console.log(productAdded);
         }
     } catch (error) {
         res.status(500).json({status: "error", message: error.message});

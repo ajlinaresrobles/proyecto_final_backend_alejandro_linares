@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { ProductManager } from "../dao/managers/ProductManager.js";
 import { ProductsMongo } from "../dao/managers/ProductManagerMongo.js";
+import { CartsMongo } from "../dao/managers/CartManagerMongo.js";
 
 // const productManager = new ProductManager("products.json");
 const productManager = new ProductsMongo();
+const cartManager = new CartsMongo();
 
 const router = Router();
 
@@ -11,7 +13,7 @@ const router = Router();
 router.get("/", async(req,res)=>{
     try {
         const products = await productManager.getProducts();
-
+        
         res.render("home", {products: products});
     } catch (error) {
         res.status(500).json({status: "error", message: error.message});
@@ -90,6 +92,7 @@ router.get("/cart/:cid",async(req,res)=>{
         const cartId = req.params.cid;
         const cart = await cartManager.getCartById(cartId);
         res.render("cartFullInfo", cart);
+        console.log(cart);
     } catch (error) {
        
         res.send(`<div>error al cargar esta vista</div>`);
