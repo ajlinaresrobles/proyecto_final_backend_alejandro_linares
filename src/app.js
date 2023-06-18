@@ -4,11 +4,16 @@ import { cartRouter } from "./routes/carts.route.js";
 import { Server } from "socket.io";
 import handlebars from "express-handlebars";
 import { viewsRouter } from "./routes/views.routes.js";
+import { sessionsRouter } from "./routes/sessions.routes.js";
 import { __dirname } from "./utils.js";
 import path from "path";
 import { ProductManager } from "./dao/managers/ProductManager.js";
 import { connectDB } from "./config/dbConnection.js";
 import { ChatMongo } from "./dao/managers/chat.mongo.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import passport from "passport";
+import { initPassport } from "./config/passport.config.js";
 
 const app = express();
 
@@ -18,11 +23,28 @@ const httpServer = app.listen(port, ()=> console.log(`server listening on port $
 
 const socketServer = new Server (httpServer);
 
-const productManager = new ProductManager("products.json")
+const productManager = new ProductManager("products.json");
+
+
 
 app.engine('.hbs', handlebars.engine({extname: '.hbs'}));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, "/views"));
+
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: "mongodb+srv://ajlinaresrobles:Ale120384.@cluster0.wqwvedx.mongodb.net/ProyectoFinal?retryWrites=true&w=majority"
+    }),
+    secret: "claveSecreta",
+    resave: true,
+    saveUninitialized: true
+}));
+
+
+initPassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.use(express.static(path.join(__dirname, "/public")));
@@ -34,6 +56,7 @@ connectDB();
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use(viewsRouter);
+app.use("/api/sessions", sessionsRouter);
 
 
 socketServer.on("connection", async(socket)=>{

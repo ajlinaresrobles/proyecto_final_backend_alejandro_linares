@@ -44,7 +44,7 @@ router.get("/chat", async(req, res)=>{
 router.get("/products", async(req, res)=>{
 
     try {
-        const {limit=3,page=1,sort="asc",category, stock} = req.query;
+        const {limit=2,page=1,sort="asc",category, stock} = req.query;
         if (!["asc", "desc"].includes(sort)) {
             return res.status(400).json({status: "error", message: "solo puede ser asc o desc"});
         };
@@ -93,10 +93,23 @@ router.get("/cart/:cid",async(req,res)=>{
         const cart = await cartManager.getCartById(cartId);
         res.render("cartFullInfo", cart);
         console.log(cart);
+    
     } catch (error) {
        
         res.send(`<div>error al cargar esta vista</div>`);
     }
+
+    
+});
+
+
+
+router.get("/login", (req, res)=>{
+    res.render("login");
+});
+
+router.get("/signup", (req, res)=>{
+    res.render("signup");
 });
 
 
