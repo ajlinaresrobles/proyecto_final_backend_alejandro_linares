@@ -41,7 +41,11 @@ router.get("/logout",(req, res)=>{
 });
 
 router.get("/current", (req, res)=>{
+    if(!req.user){
+        res.send(`<div> nadie ha iniciado sesión, <a href= "/login">iniciar sesión</a></div>`);
+    }else{
     res.render("current", {user: JSON.parse(JSON.stringify(req.user))});
+    }
 });
 
 

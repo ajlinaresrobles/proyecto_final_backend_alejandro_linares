@@ -3,6 +3,7 @@ import { ProductManager } from "../dao/managers/ProductManager.js";
 import { ProductsMongo } from "../dao/managers/ProductManagerMongo.js";
 import { CartsMongo } from "../dao/managers/CartManagerMongo.js";
 
+
 // const productManager = new ProductManager("products.json");
 const productManager = new ProductsMongo();
 const cartManager = new CartsMongo();
@@ -87,12 +88,13 @@ router.get("/products", async(req, res)=>{
 
 });
 
-router.get("/cart/:cid",async(req,res)=>{
+router.get("/carts/:cid",async(req,res)=>{
     try {
         const cartId = req.params.cid;
         const cart = await cartManager.getCartById(cartId);
-        res.render("cartFullInfo", cart);
-        console.log(cart);
+        const result = JSON.parse(JSON.stringify(cart));
+        res.render("cartFullInfo", result);
+        console.log(result);
     
     } catch (error) {
        
@@ -105,7 +107,11 @@ router.get("/cart/:cid",async(req,res)=>{
 
 
 router.get("/login", (req, res)=>{
+    if(req.user){
+        res.send(`<div> sesión activa, <a href= "/products?page=1">ir a los productos</a></div>`);
+    }else{
     res.render("login");
+    };
 });
 
 router.get("/signup", (req, res)=>{

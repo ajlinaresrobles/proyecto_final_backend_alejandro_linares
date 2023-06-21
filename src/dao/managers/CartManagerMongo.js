@@ -27,8 +27,8 @@ export class CartsMongo{
             if (!data) {
                 throw new Error(`cart with id: ${id} does not exist`);
             };
-           
-            return data
+            // const response = JSON.parse(JSON.stringify(data));
+            return data;
         } catch (error) {
             throw new Error(`Error al obtener carrito ${error.message}`);
         }
