@@ -15,6 +15,13 @@ export const initPassport = ()=>{
         async(req, username, password, done)=>{
              try {
                 const userRegisterForm = req.body;
+
+                const validEmail =  /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
+
+	            if( !validEmail.test(userRegisterForm.email) ){
+		        return done(null, false);
+                }else{
+
                 const user = await userModel.findOne({email:username});
 
                 if (!user) {
@@ -36,7 +43,7 @@ export const initPassport = ()=>{
                 }else{
                     return done(null, false);
                 }
-
+            }
              } catch (error) {
                 return done(error);
              }

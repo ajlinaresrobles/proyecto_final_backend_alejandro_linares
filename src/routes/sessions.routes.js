@@ -10,7 +10,7 @@ router.post("/signup", passport.authenticate("signupStrategy", {failureRedirect:
 });
 
 router.get("/failed-signup", (req, res)=>{
-    res.send(`<div> error al registrarse, <a href= "/signup">intente de nuevo</a></div>`)
+    res.send(`<div> error al registrarse, por favor llenar todos los campos y revisar el formato del correo electrónico, <a href= "/signup">intente de nuevo</a></div>`)
 });
 
 

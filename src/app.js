@@ -14,10 +14,11 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import { initPassport } from "./config/passport.config.js";
+import { config } from "./config/config.js";
 
 const app = express();
 
-const port = 8080;
+const port = config.port;
 
 const httpServer = app.listen(port, ()=> console.log(`server listening on port ${port}`));
 
@@ -34,9 +35,9 @@ app.set('views', path.join(__dirname, "/views"));
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://ajlinaresrobles:Ale120384.@cluster0.wqwvedx.mongodb.net/ProyectoFinal?retryWrites=true&w=majority"
+        mongoUrl: config.mongoUrl
     }),
-    secret: "claveSecreta",
+    secret: config.secretSession,
     resave: true,
     saveUninitialized: true
 }));
