@@ -1,8 +1,12 @@
 import { CartsMongo } from "../dao/managers/CartManagerMongo.js";
 import { ProductsMongo } from "../dao/managers/ProductManagerMongo.js";
+import { TicketMongo } from "../dao/managers/ticketManagerMongo.js";
+import {v4 as uuidv4} from "uuid";
 
 const cartManager = new CartsMongo();
 const productManager = new ProductsMongo();
+const ticketManager = new TicketMongo();
+let myuuid = uuidv4();
 
 
 export const addCartControl = async(req, res)=>{
@@ -114,6 +118,79 @@ export const deleteCartControl = async(req,res)=>{
         cart.products=[];
         const response = await cartManager.updateCart(cartId, cart);
         res.json({status:"success", result: response, message:"productos eliminados"});
+    } catch (error) {
+        res.status(400).json({status:"error", error:error.message});
+    }
+};
+
+export const purchaseControl = async(req,res)=>{
+    try {
+        const cartId = req.params.cid;
+        let approvedProductPurchase = [];
+        let rejectedProductPurchase = [];
+        let totalAmount = 0
+        let cart = await cartManager.getCartById(cartId);
+        if (!cart){
+            res.status(400).json({status: "error", message: "this cart does not exist"});
+        }   
+        if(cart.products.length == 0){
+            res.status(400).json({status: "error", message: "this cart does not have products"});  
+        }else{
+            console.log(cart);
+       for (let i = 0; i < cart.products.length; i++) {
+       
+        let productIdCart = cart.products[i]._id;
+       
+        let productDB = await productManager.getProductById(productIdCart);
+        let dif = parseInt(productDB.stock) - cart.products[i].quantity;
+        
+            if (dif >= 0) {
+                
+                approvedProductPurchase.push(cart.products[i]);
+                totalAmount += cart.products[i].quantity * productDB.price;
+                productDB.stock = dif;
+                await productManager.updateProducts(cart.products[i]._id, productDB);
+                await cartManager.deleteProduct(cartId, cart.products[i]._id);
+
+             }else{
+               
+                rejectedProductPurchase.push(cart.products[i]);
+             };
+       };
+    //    console.log("aprobados: ", approvedProductPurchase);
+
+    //    console.log("rechazados: ", rejectedProductPurchase);
+
+       if (approvedProductPurchase.length > 0 & rejectedProductPurchase.length == 0) {
+        const ticket = {
+            code: myuuid,
+            purchase_daytime: Date(),
+            amount: totalAmount,
+            purchaser: JSON.parse(JSON.stringify(req.user.email))
+        }
+
+        const response = await ticketManager.createTicket(ticket);
+        res.json({status:"success", result:response});
+       };
+
+       if (rejectedProductPurchase.length > 0 & approvedProductPurchase.length == 0) {
+        res.json({status:"success",  message: "stock insuficiente de estos, no se puede realizar la compra", data: rejectedProductPurchase});
+       };
+
+
+        if (approvedProductPurchase.length > 0 & rejectedProductPurchase.length > 0) {
+            const ticket = {
+                code: myuuid,
+                purchase_daytime: Date(),
+                amount: totalAmount,
+                purchaser: JSON.parse(JSON.stringify(req.user.email))
+            }
+    
+            const response = await ticketManager.createTicket(ticket);
+            res.json({status: "success", result: response, message: "los siguientes productos no se pudieron comprar por falta de stock", data: rejectedProductPurchase});
+        };
+
+    };
     } catch (error) {
         res.status(400).json({status:"error", error:error.message});
     }

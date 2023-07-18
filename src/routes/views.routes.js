@@ -2,6 +2,7 @@ import { Router } from "express";
 import { ProductManager } from "../dao/managers/ProductManager.js";
 import { ProductsMongo } from "../dao/managers/ProductManagerMongo.js";
 import { CartsMongo } from "../dao/managers/CartManagerMongo.js";
+import { checkUserAuthenticated, checkRoles } from "../middlewares/auth.js";
 
 
 // const productManager = new ProductManager("products.json");
@@ -31,7 +32,7 @@ router.get("/realtimeproducts", async(req, res)=>{
     }   
 });
 
-router.get("/chat", async(req, res)=>{
+router.get("/chat", checkUserAuthenticated, checkRoles(["user"]), async(req, res)=>{
 
     try {
         res.render("chat");

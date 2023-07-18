@@ -6,6 +6,7 @@ import { getProductsControl } from "../controllers/products.controller.js";
 import { addProductControl } from "../controllers/products.controller.js";
 import { updateProductControl } from "../controllers/products.controller.js";
 import { deleteProductControl } from "../controllers/products.controller.js";
+import { checkRoles, checkUserAuthenticated } from "../middlewares/auth.js";
 
 // const productManager = new ProductManager("products.json");
 
@@ -16,9 +17,9 @@ const router = Router();
 
 router.get("/:pid", getProductByIdControl);
 router.get("/", getProductsControl);
-router.post("/", addProductControl);
-router.put("/:pid", updateProductControl);
-router.delete("/:pid", deleteProductControl);
+router.post("/", checkUserAuthenticated, checkRoles(["admin"]),addProductControl);
+router.put("/:pid", checkUserAuthenticated, checkRoles(["admin"]), updateProductControl);
+router.delete("/:pid",checkUserAuthenticated, checkRoles(["admin"]), deleteProductControl);
 
 // router.get("/", async(req, res)=>{
 //         try {

@@ -25,10 +25,9 @@ export class CartsMongo{
             const data = await this.model.findById(id);
             
             if (!data) {
-                throw new Error(`cart with id: ${id} does not exist`);
-            };
-            // const response = JSON.parse(JSON.stringify(data));
-            return data;
+                throw new Error(`this cart does not exist`);
+            }
+            return data
         } catch (error) {
             throw new Error(`Error al obtener carrito ${error.message}`);
         }

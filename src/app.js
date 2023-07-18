@@ -18,7 +18,7 @@ import { config } from "./config/config.js";
 
 const app = express();
 
-const port = config.port;
+const port = config.server.port;
 
 const httpServer = app.listen(port, ()=> console.log(`server listening on port ${port}`));
 
@@ -35,9 +35,9 @@ app.set('views', path.join(__dirname, "/views"));
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: config.mongoUrl
+        mongoUrl: config.mongo.mongoUrl
     }),
-    secret: config.secretSession,
+    secret: config.server.secretSession,
     resave: true,
     saveUninitialized: true
 }));

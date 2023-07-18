@@ -3,7 +3,12 @@ dotenv.config();
 
 
 export const config = {
-    port: process.env.PORT,
-    secretSession: process.env.SECRET_SESSION,
-    mongoUrl: process.env.MONGO_URL
+    server:{
+        port: process.env.PORT,
+        secretSession: process.env.SECRET_SESSION,
+    },
+    mongo:{
+        mongoUrl: process.env.MONGO_URL
+    }
+    
 }
