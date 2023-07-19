@@ -26,6 +26,7 @@ export const getCartByIdControl = async(req, res)=>{
         const cart = await cartManager.getCartById(cartId);
         if (cart) {
             res.json({status: "success", cart: cart});
+            console.log(cart);
         } else{
             res.status(400).json({status: "error", message: "this cart does not exist"});
         }
@@ -46,6 +47,7 @@ export const addProductToCartControl = async(req, res)=>{
             if (product) {
                 const result = await cartManager.addProductToCart(cartId, productId);
                 res.json({status: "success", message: result});
+                console.log(result);
             } else {
                 res.status(400).json({status: "error", message: "cannot add this product"});
             }
@@ -90,6 +92,7 @@ export const updateCartControl = async(req,res)=>{
         cart.products = [...products];
         const response = await cartManager.updateCart(cartId, cart);
         res.json({status:"success", result:response, message:"cart updated"});
+        console.log(response);
     } catch (error) {
         res.status(400).json({status:"error", error:error.message});
     }
@@ -105,6 +108,7 @@ export const updateQuantityInCartControl = async(req,res)=>{
         await productManager.getProductById(productId);
         const response = await cartManager.updateQuantityInCart(cartId, productId, quantity);
         res.json({status:"success", result: response, message:"product updated"});
+        console.log(response);
     } catch (error) {
         res.status(400).json({status:"error", error:error.message});
     }
@@ -157,9 +161,9 @@ export const purchaseControl = async(req,res)=>{
                 rejectedProductPurchase.push(cart.products[i]);
              };
        };
-    //    console.log("aprobados: ", approvedProductPurchase);
+       console.log("aprobados: ", approvedProductPurchase);
 
-    //    console.log("rechazados: ", rejectedProductPurchase);
+       console.log("rechazados: ", rejectedProductPurchase);
 
        if (approvedProductPurchase.length > 0 & rejectedProductPurchase.length == 0) {
         const ticket = {
@@ -167,14 +171,16 @@ export const purchaseControl = async(req,res)=>{
             purchase_daytime: Date(),
             amount: totalAmount,
             purchaser: JSON.parse(JSON.stringify(req.user.email))
-        }
+        };
 
         const response = await ticketManager.createTicket(ticket);
         res.json({status:"success", result:response});
+        console.log(response);
        };
 
        if (rejectedProductPurchase.length > 0 & approvedProductPurchase.length == 0) {
-        res.json({status:"success",  message: "stock insuficiente de estos, no se puede realizar la compra", data: rejectedProductPurchase});
+        res.json({status:"success",  message: "stock insuficiente de estos productos, no se puede realizar la compra", data: rejectedProductPurchase});
+        console.log("stock insuficiente de estos productos, no se puede realizar la compra ", rejectedProductPurchase);
        };
 
 
@@ -184,10 +190,11 @@ export const purchaseControl = async(req,res)=>{
                 purchase_daytime: Date(),
                 amount: totalAmount,
                 purchaser: JSON.parse(JSON.stringify(req.user.email))
-            }
-    
+            };
+            
             const response = await ticketManager.createTicket(ticket);
             res.json({status: "success", result: response, message: "los siguientes productos no se pudieron comprar por falta de stock", data: rejectedProductPurchase});
+            console.log(result, " los siguientes productos no se pudieron comprar por falta de stock: ", rejectedProductPurchase);
         };
 
     };

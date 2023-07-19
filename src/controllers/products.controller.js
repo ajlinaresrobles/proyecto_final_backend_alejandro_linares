@@ -8,6 +8,7 @@ export const getProductByIdControl = async(req, res)=>{
         const productId = req.params.pid
         const gotProduct = await productManager.getProductById(productId);
         res.json({status: "success", product: gotProduct});
+        console.log(gotProduct);
     } catch (error) {
         res.status(400).json({status: "error", message: "there is not product with this id"});
     }
@@ -90,7 +91,7 @@ export const updateProductControl = async(req, res)=>{
         const newData = req.body;   
         const updatedProduct = await productManager.updateProducts(productId, newData);
         res.json({status: "success", message: "product updated", product: updatedProduct});
-        
+        console.log(updatedProduct);
 
     } catch (error) {
         res.status(400).json({status: "error", message: "there is not product with this id"});
@@ -102,7 +103,7 @@ export const deleteProductControl = async(req, res)=>{
         const productId = req.params.pid
         const productList = await productManager.deleteProducts(productId);
         res.json({status: "success", message: "product deleted", product: productList});
-
+        console.log(productList);
     } catch (error) {
         res.status(400).json({status: "error", message: "there is not product with this id"});
     }

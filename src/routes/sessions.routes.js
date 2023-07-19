@@ -15,8 +15,8 @@ router.get("/failed-signup", (req, res)=>{
 
 
 router.post("/login", passport.authenticate("loginStrategy", {failureRedirect: "/api/sessions/failed-login"}), (req, res)=>{
-    // res.redirect("/products?page=1");
-   res.send("login exitoso");
+    res.redirect("/products?page=1");
+//    res.send("login exitoso");
 });
 
 router.get("/failed-login", (req, res)=>{
@@ -43,7 +43,7 @@ router.get("/logout",(req, res)=>{
 
 router.get("/current", (req, res)=>{
     if(!req.user){
-        res.send(`<div> nadie ha iniciado sesión, <a href= "/login">iniciar sesión</a></div>`);
+        res.send(`<div> por favor, <a href= "/login">iniciar sesión</a></div>`);
     }else{
     res.render("current", {user: JSON.parse(JSON.stringify(req.user))});
     }

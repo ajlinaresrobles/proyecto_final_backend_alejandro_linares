@@ -81,8 +81,11 @@ router.get("/products", async(req, res)=>{
                 prevLink: result.hasPrevPage ? `${baseUrl.replace(`page=${result.page}`, `page=${result.prevPage}`)}`: null,
                 nextLink: result.hasNextPage ? `${baseUrl.replace(`page=${result.page}`, `page=${result.nextPage}`)}`: null,
            };
-          
-           res.render("products", response);
+           if(!req.user){
+            res.send(`<div> por favor, <a href= "/login">iniciar sesión</a></div>`);         
+           }else{
+            res.render("products", response);
+           }
     } catch (error) {
         res.status(500).json({status: "error", message: error.message});
     }

@@ -30,7 +30,7 @@ router.delete("/:cid", checkUserAuthenticated, checkRoles(["user"]), deleteCartC
 
 
 
-router.post("/:cid/purchase", purchaseControl);
+router.get("/:cid/purchase", purchaseControl);
 
 
 export {router as cartRouter};
