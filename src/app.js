@@ -15,6 +15,7 @@ import MongoStore from "connect-mongo";
 import passport from "passport";
 import { initPassport } from "./config/passport.config.js";
 import { config } from "./config/config.js";
+import { mockRouter } from "./routes/mock.routes.js";
 
 const app = express();
 
@@ -58,7 +59,7 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use(viewsRouter);
 app.use("/api/sessions", sessionsRouter);
-
+app.use("/api/mockingproducts", mockRouter);
 
 socketServer.on("connection", async(socket)=>{
     try {
