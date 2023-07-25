@@ -16,6 +16,7 @@ import passport from "passport";
 import { initPassport } from "./config/passport.config.js";
 import { config } from "./config/config.js";
 import { mockRouter } from "./routes/mock.routes.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
@@ -52,6 +53,8 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+
+app.use(errorHandler);
 
 connectDB();
 

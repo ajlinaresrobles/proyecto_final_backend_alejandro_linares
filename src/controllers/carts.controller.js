@@ -3,6 +3,8 @@ import { ProductsMongo } from "../dao/managers/ProductManagerMongo.js";
 import { TicketMongo } from "../dao/managers/ticketManagerMongo.js";
 import {v4 as uuidv4} from "uuid";
 
+
+
 const cartManager = new CartsMongo();
 const productManager = new ProductsMongo();
 const ticketManager = new TicketMongo();
@@ -28,7 +30,7 @@ export const getCartByIdControl = async(req, res)=>{
             res.json({status: "success", cart: cart});
             console.log(cart);
         } else{
-            res.status(400).json({status: "error", message: "this cart does not exist"});
+                  res.status(400).json({status: "error", message: "this cart does not exist"});
         }
     } catch (error) {
         res.status(500).json({status: "error", message: error.message});

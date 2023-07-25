@@ -31,6 +31,7 @@ export class ProductsMongo{
             try {
                 const data = await this.model.findById(id);
                 if (!data) {
+               
                     throw new Error(`product with id: ${id} does not exist`);
                 }
                 return data

@@ -1,4 +1,7 @@
 import { ProductsMongo } from "../dao/managers/ProductManagerMongo.js";
+import { CustomError } from "../services/errors/customError.service.js";
+import { generateProductErrorParams } from "../services/errors/productErrorParams.service.js";
+import { EError } from "../enums/Eerror.js";
 
 const productManager = new ProductsMongo();
 
@@ -10,6 +13,7 @@ export const getProductByIdControl = async(req, res)=>{
         res.json({status: "success", product: gotProduct});
         console.log(gotProduct);
     } catch (error) {
+       
         res.status(400).json({status: "error", message: "there is not product with this id"});
     }
 };
@@ -60,7 +64,13 @@ export const addProductControl = async (req, res)=>{
     try {
         const {title, description, code, price, status, stock, category} = req.body;
         if (!title || !description || !code || !price || !status || !stock || !category ) {
-            return res.status(400).json({status: "error", message: "every key should be filled"})
+            CustomError.createError({
+                name: "error al crear el producto",
+                cause: generateProductErrorParams(),
+                message: "error en la creación del producto",
+                errorCode: EError.INVALID_JSON
+            })
+            // return res.status(400).json({status: "error", message: "every key should be filled"})
         }
     
         const newProduct = req.body;
