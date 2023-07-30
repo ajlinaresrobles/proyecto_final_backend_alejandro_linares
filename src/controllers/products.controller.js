@@ -2,6 +2,7 @@ import { ProductsMongo } from "../dao/managers/ProductManagerMongo.js";
 import { CustomError } from "../services/errors/customError.service.js";
 import { generateProductErrorParams } from "../services/errors/productErrorParams.service.js";
 import { EError } from "../enums/Eerror.js";
+import { logger } from "../utils/logger.js";
 
 const productManager = new ProductsMongo();
 
@@ -11,10 +12,11 @@ export const getProductByIdControl = async(req, res)=>{
         const productId = req.params.pid
         const gotProduct = await productManager.getProductById(productId);
         res.json({status: "success", product: gotProduct});
-        console.log(gotProduct);
+        logger.http(gotProduct);
     } catch (error) {
        
         res.status(400).json({status: "error", message: "there is not product with this id"});
+        logger.error("mensaje de error");
     }
 };
 
@@ -69,7 +71,7 @@ export const addProductControl = async (req, res)=>{
                 cause: generateProductErrorParams(),
                 message: "error en la creación del producto",
                 errorCode: EError.INVALID_JSON
-            })
+            });
             // return res.status(400).json({status: "error", message: "every key should be filled"})
         }
     
@@ -83,10 +85,11 @@ export const addProductControl = async (req, res)=>{
                 
         const productAdded = await productManager.addProduct(newProduct);
         res.json({status: "success", product: productAdded});
-        console.log(productAdded);
+        logger.http(productAdded);
         }
     } catch (error) {
         res.status(500).json({status: "error", message: error.message});
+        logger.error("mensaje de error");
     }
 };
 
@@ -101,10 +104,11 @@ export const updateProductControl = async(req, res)=>{
         const newData = req.body;   
         const updatedProduct = await productManager.updateProducts(productId, newData);
         res.json({status: "success", message: "product updated", product: updatedProduct});
-        console.log(updatedProduct);
+        logger.http(updatedProduct);
 
     } catch (error) {
         res.status(400).json({status: "error", message: "there is not product with this id"});
+        logger.error("mensaje de error");
     }
 };
 
@@ -113,8 +117,9 @@ export const deleteProductControl = async(req, res)=>{
         const productId = req.params.pid
         const productList = await productManager.deleteProducts(productId);
         res.json({status: "success", message: "product deleted", product: productList});
-        console.log(productList);
+        logger.http(productList);
     } catch (error) {
         res.status(400).json({status: "error", message: "there is not product with this id"});
+        logger.error("mensaje de error");
     }
 }

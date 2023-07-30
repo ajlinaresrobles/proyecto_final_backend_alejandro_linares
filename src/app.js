@@ -17,12 +17,13 @@ import { initPassport } from "./config/passport.config.js";
 import { config } from "./config/config.js";
 import { mockRouter } from "./routes/mock.routes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import { logger } from "./utils/logger.js";
 
 const app = express();
 
 const port = config.server.port;
 
-const httpServer = app.listen(port, ()=> console.log(`server listening on port ${port}`));
+const httpServer = app.listen(port, ()=> logger.info(`server listening on port ${port}`));
 
 const socketServer = new Server (httpServer);
 
@@ -66,13 +67,13 @@ app.use("/api/mockingproducts", mockRouter);
 
 socketServer.on("connection", async(socket)=>{
     try {
-        console.log(`nuevo socket cliente conectado ${socket.id}`)
+        logger.info(`nuevo socket cliente conectado ${socket.id}`)
     const totalProducts = await productManager.getProducts();
     socketServer.emit("totalProductsMessage", totalProducts);
 
     socket.on("newProduct", async(data)=>{
         try {
-            console.log("newProduct", data);
+            logger.http("newProduct", data);
             const addedProduct = await productManager.addProduct(data);
             
             socketServer.emit("newProductMessage", addedProduct);

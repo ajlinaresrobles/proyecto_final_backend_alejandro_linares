@@ -2,6 +2,7 @@ import passport from "passport";
 import localStrategy from "passport-local";
 import { userModel } from "../dao/models/users.model.js";
 import { createHash, validPassword } from "../utils.js";
+import { logger } from "../utils/logger.js";
 
 
 export const initPassport = ()=>{
@@ -36,7 +37,7 @@ export const initPassport = ()=>{
                         userRegisterForm.password = createHash(userRegisterForm.password);
                         const userCreated = await userModel.create(userRegisterForm);
         
-                    console.log(userCreated);
+                    logger.debug(userCreated);
                         
                     return done(null, userCreated);
                         }
