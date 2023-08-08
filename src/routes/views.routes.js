@@ -4,6 +4,7 @@ import { ProductsMongo } from "../dao/managers/ProductManagerMongo.js";
 import { CartsMongo } from "../dao/managers/CartManagerMongo.js";
 import { checkUserAuthenticated, checkRoles } from "../middlewares/auth.js";
 import { logger } from "../utils/logger.js";
+import { resetPassword } from "../controllers/sessions.controller.js";
 
 
 // const productManager = new ProductManager("products.json");
@@ -123,6 +124,15 @@ router.get("/signup", (req, res)=>{
     res.render("signup");
 });
 
+router.get("/forgot-password", (req, res)=>{
+    res.render("forgotPassword");
+});
+
+router.get("/reset-password", (req, res)=>{
+    const token = req.query.token;
+    res.render("resetPass", {token});
+});
+
 router.get("/loggerTest", (req, res)=>{
     res.send("testeando logger")
     logger.debug("mensaje debug");
@@ -133,6 +143,7 @@ router.get("/loggerTest", (req, res)=>{
     logger.fatal("mensaje de error crítico o fatal");
     
 });
+
 
 export {router as viewsRouter};
 

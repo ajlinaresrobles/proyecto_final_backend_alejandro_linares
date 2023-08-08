@@ -1,6 +1,7 @@
 import express from "express";
 import { productRouter } from "./routes/products.route.js";
 import { cartRouter } from "./routes/carts.route.js";
+import { usersRouter } from "./routes/users.routes.js";
 import { Server } from "socket.io";
 import handlebars from "express-handlebars";
 import { viewsRouter } from "./routes/views.routes.js";
@@ -64,6 +65,7 @@ app.use("/api/carts", cartRouter);
 app.use(viewsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/mockingproducts", mockRouter);
+app.use("/api/users", usersRouter);
 
 socketServer.on("connection", async(socket)=>{
     try {

@@ -17,9 +17,9 @@ const router = Router();
 
 router.get("/:pid", getProductByIdControl);
 router.get("/", getProductsControl);
-router.post("/", checkUserAuthenticated, checkRoles(["admin"]),addProductControl);
-router.put("/:pid", checkUserAuthenticated, checkRoles(["admin"]), updateProductControl);
-router.delete("/:pid",checkUserAuthenticated, checkRoles(["admin"]), deleteProductControl);
+router.post("/", checkUserAuthenticated, checkRoles(["admin", "premium"]),addProductControl);
+router.put("/:pid", checkUserAuthenticated, checkRoles(["admin", "premium"]), updateProductControl);
+router.delete("/:pid",checkUserAuthenticated, checkRoles(["admin", "premium"]), deleteProductControl);
 
 // router.get("/", async(req, res)=>{
 //         try {

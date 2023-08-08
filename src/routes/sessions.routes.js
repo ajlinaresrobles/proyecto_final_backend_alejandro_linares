@@ -1,5 +1,9 @@
 import { Router } from "express";
 import passport from "passport";
+import { sendRecovery } from "../controllers/sessions.controller.js";
+import { resetPassword } from "../controllers/sessions.controller.js";
+
+
 
 
 const router = Router();
@@ -15,8 +19,8 @@ router.get("/failed-signup", (req, res)=>{
 
 
 router.post("/login", passport.authenticate("loginStrategy", {failureRedirect: "/api/sessions/failed-login"}), (req, res)=>{
-    res.redirect("/products?page=1");
-//    res.send("login exitoso");
+    // res.redirect("/products?page=1");
+   res.send("login exitoso");
 });
 
 router.get("/failed-login", (req, res)=>{
@@ -40,6 +44,12 @@ router.get("/logout",(req, res)=>{
             }
     })   
 });
+
+
+router.post("/forgot-password", sendRecovery);
+ 
+router.post("/reset-password", resetPassword);
+
 
 router.get("/current", (req, res)=>{
     if(!req.user){
