@@ -9,23 +9,23 @@ import { checkUserAuthenticated, checkRoles } from "../middlewares/auth.js";
 // const cartManager = new CartManager("carts.json");
 // const productManager = new ProductManager("products.json");
 
-const cartManager = new CartsMongo();
-const productManager = new ProductsMongo();
+// const cartManager = new CartsMongo();
+// const productManager = new ProductsMongo();
 const router = Router();
 
 router.post("/", addCartControl);
 
 router.get("/:cid", getCartByIdControl);
 
-router.post("/:cid/product/:pid", checkUserAuthenticated, checkRoles(["user"]), addProductToCartControl);
+router.post("/:cid/product/:pid", checkUserAuthenticated, checkRoles(["user","premium"]), addProductToCartControl);
 
-router.delete("/:cid/product/:pid", checkUserAuthenticated, checkRoles(["user"]), deleteProductControl);
+router.delete("/:cid/product/:pid", checkUserAuthenticated, checkRoles(["user","premium"]), deleteProductControl);
 
-router.put("/:cid", checkUserAuthenticated, checkRoles(["user"]), updateCartControl);
+router.put("/:cid", checkUserAuthenticated, checkRoles(["user", "premium"]), updateCartControl);
 
-router.put("/:cid/product/:pid", checkUserAuthenticated, checkRoles(["user"]), updateQuantityInCartControl);
+router.put("/:cid/product/:pid", checkUserAuthenticated, checkRoles(["user", "premium"]), updateQuantityInCartControl);
 
-router.delete("/:cid", checkUserAuthenticated, checkRoles(["user"]), deleteCartControl);
+router.delete("/:cid", checkUserAuthenticated, checkRoles(["user", "premium"]), deleteCartControl);
 
 
 

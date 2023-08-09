@@ -50,9 +50,13 @@ export const addProductToCartControl = async(req, res)=>{
         if (cart) {
             const product = await productManager.getProductById(productId);
             if (product) {
+                if(req.user.role === "premium" && JSON.stringify(product.owner) == JSON.stringify(req.user._id)){
+                    res.status(400).json({status: "error", message: "you are not allowed to add this product"});
+                } else{
                 const result = await cartManager.addProductToCart(cartId, productId);
                 res.json({status: "success", message: result});
                 logger.http(result);
+                }
             } else {
                 res.status(400).json({status: "error", message: "cannot add this product"});
             }

@@ -82,7 +82,8 @@ export const addProductControl = async (req, res)=>{
         if (matchCode) {
             return res.status(400).json({status: "error", message: "there is another product using this code"});
         } else {
-                
+           
+        newProduct.owner = req.user._id;   
         const productAdded = await productManager.addProduct(newProduct);
         res.json({status: "success", product: productAdded});
         logger.http(productAdded);
@@ -101,7 +102,10 @@ export const updateProductControl = async(req, res)=>{
             return res.status(400).json({status: "error", message: "every key should be filled"})
         }
         
-        const newData = req.body;   
+        const newData = req.body; 
+
+        // const product = await productManager.getProductById(productId);
+
         const updatedProduct = await productManager.updateProducts(productId, newData);
         res.json({status: "success", message: "product updated", product: updatedProduct});
         logger.http(updatedProduct);
@@ -114,10 +118,17 @@ export const updateProductControl = async(req, res)=>{
 
 export const deleteProductControl = async(req, res)=>{
     try {
-        const productId = req.params.pid
-        const productList = await productManager.deleteProducts(productId);
-        res.json({status: "success", message: "product deleted", product: productList});
-        logger.http(productList);
+        const productId = req.params.pid;
+        const product = await productManager.getProductById(productId);
+       
+        if(req.user.role === "premium" && JSON.stringify(product.owner) == JSON.stringify(req.user._id) || req.user.role === "admin"){
+            const productList = await productManager.deleteProducts(productId);
+            res.json({status: "success", message: "product deleted", product: productList});
+            logger.http(productList);
+        } else{
+            res.status(400).json({status: "error", message: "you are not allowed to delete this product"});
+        }
+            
     } catch (error) {
         res.status(400).json({status: "error", message: "there is not product with this id"});
         logger.error("mensaje de error");
