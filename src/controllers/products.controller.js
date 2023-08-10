@@ -104,12 +104,15 @@ export const updateProductControl = async(req, res)=>{
         
         const newData = req.body; 
 
-        // const product = await productManager.getProductById(productId);
+        const product = await productManager.getProductById(productId);
 
+        if(req.user.role === "premium" && JSON.stringify(product.owner) == JSON.stringify(req.user._id) || req.user.role === "admin"){
         const updatedProduct = await productManager.updateProducts(productId, newData);
         res.json({status: "success", message: "product updated", product: updatedProduct});
         logger.http(updatedProduct);
-
+        } else{
+            res.status(400).json({status: "error", message: "you are not allowed to update this product"});
+        }
     } catch (error) {
         res.status(400).json({status: "error", message: "there is not product with this id"});
         logger.error("mensaje de error");
