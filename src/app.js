@@ -19,6 +19,8 @@ import { config } from "./config/config.js";
 import { mockRouter } from "./routes/mock.routes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { logger } from "./utils/logger.js";
+import { swaggerSpecs } from "./config/swaggerConfig.js";
+import swaggerUI from "swagger-ui-express";
 
 const app = express();
 
@@ -66,6 +68,7 @@ app.use(viewsRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/mockingproducts", mockRouter);
 app.use("/api/users", usersRouter);
+app.use("/documentation", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 
 socketServer.on("connection", async(socket)=>{
     try {

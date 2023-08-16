@@ -27,9 +27,6 @@ router.put("/:cid/product/:pid", checkUserAuthenticated, checkRoles(["user", "pr
 
 router.delete("/:cid", checkUserAuthenticated, checkRoles(["user", "premium"]), deleteCartControl);
 
-
-
-
 router.get("/:cid/purchase", purchaseControl);
 
 
