@@ -113,8 +113,8 @@ socketServer.on("connection", async(socket)=>{
         const messages = await chatService.getMessages();
         socketServer.emit("MessageHistory", messages);
     })
-})
+});
 
 
-
+export {app}
 
