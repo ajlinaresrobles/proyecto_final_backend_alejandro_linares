@@ -2,6 +2,7 @@ import chai from "chai";
 import supertest from "supertest";
 import { app } from "../src/app.js";
 import { userModel } from "../src/dao/models/users.model.js";
+import { cartsModel } from "../src/dao/models/carts.model.js";
 
 
 const expect = chai.expect;
@@ -30,36 +31,53 @@ describe("testing para autenticación", ()=>{
 
     it("el endpoint post api/sessions/login permite loguear un usuario", async function () {
         const response = await requester.post("/api/sessions/login").send({email:this.userMock.email, password:this.userMock.password});
-        console.log(response);
-        // const cookieHeader = response.header['set-cookie'][0];
-        // const cookie ={
-        //     name: cookieHeader.split("=")[0],
-        //     value: cookieHeader.split("=")[1]
-        // }
-        // this.cookie = cookie;
-        // expect(cookie.name).to.be.equal("connect.sid");
+        expect(response.statusCode).to.be.equal(200);
+        expect(response.text).to.be.equal("login exitoso");
+
     });
-
-    // it("el endpoint get api/sessions/current debe responder la información del usuario", async function () {
-    //     const response = await requester.get("/api/sessions/current").set("Cookie", [`${this.cookie.name}=${this.cookie.value}`]);
-    //     console.log(response.body);
-    // });
-
-    it("el endpoint post api/products debe permitir crear un producto", async function () {
-                const productMock = {
-                    title: "silla gamer",
-                    description: "silla gamer blanca",
-                    category: "silla",
-                    price: 58990,
-                    thumbnail: "https://sodimac.scene7.com/is/image/SodimacCL/5967791_01?wid=1500&hei=1500&qlt=70",
-                    code: "aaz569",
-                    status: "true",
-                    stock: 36
-                };
-                await requester.post("/api/sessions/login").send({email: this.userMock.email, password: this.userMock.password});
-                const response = await requester.post("/api/products").send(productMock);
-                console.log(response.data);
-            }); 
 
 });
 
+describe ("testing para carritos", ()=>{
+
+    before(async function () {
+        await cartsModel.deleteMany({});
+    });
+
+    it("el endpoint post api/carts/ debe poder agregar un carrito", async function () {
+        const response = await requester.post("/api/carts");
+        console.log(response._body.cart._id);
+        const cartId = JSON.parse(JSON.stringify(response._body.cart._id));
+        expect(response.statusCode).to.be.equal(200);
+    });
+
+    it("el endpoint get api/carts/:cid debe mostrar el carrito proporcionando su id", async function () {
+        const response = await requester.post("/api/carts");
+        console.log(response._body.cart._id);
+        const cartId = JSON.parse(JSON.stringify(response._body.cart._id));
+        const result = await requester.get(`/api/carts/${cartId}`);
+        console.log(result._body);
+        expect(result._body.cart).to.have.property("products");
+        expect(Array.isArray(result._body.cart.products)).to.be.equal(true);
+    });
+
+});
+
+
+describe("testing para productos", ()=>{
+
+
+    it("el endpoint get api/products debe mostrar todos los productos", async function () {
+        const response = await requester.get("/api/products?sort=asc");
+        expect(response.statusCode).to.be.equal(200);
+    });
+
+    it("el endpoint get api/products/:pid debe mostrar el producto proporcionando su id", async function () {
+        const response = await requester.get("/api/products?sort=asc");
+        console.log(response._body.payload[0]._id);
+        const productId = JSON.parse(JSON.stringify(response._body.payload[0]._id));
+        const result = await requester.get(`/api/products/${productId}`);
+        expect(result.statusCode).to.be.equal(200);
+        expect(result._body.product).to.have.property("code");
+    });
+});
