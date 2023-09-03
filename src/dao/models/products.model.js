@@ -13,7 +13,8 @@ const productsSchema = new mongoose.Schema({
     thumbnail: {type: String, required: true},
     category: {type: String, required: true},
     stock: {type: String, required: true},
-    owner:{type: mongoose.Schema.Types.ObjectId, ref:"users"}
+    owner:{type: mongoose.Schema.Types.ObjectId, ref:"users"},
+    image: {type: String, default: ""}
 });
 
 productsSchema.plugin(mongoosePaginate);

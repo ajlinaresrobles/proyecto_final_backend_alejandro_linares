@@ -7,6 +7,7 @@ import { addProductControl } from "../controllers/products.controller.js";
 import { updateProductControl } from "../controllers/products.controller.js";
 import { deleteProductControl } from "../controllers/products.controller.js";
 import { checkRoles, checkUserAuthenticated } from "../middlewares/auth.js";
+import { uploadImgProduct } from "../utils.js";
 
 // const productManager = new ProductManager("products.json");
 
@@ -17,7 +18,7 @@ const router = Router();
 
 router.get("/:pid", getProductByIdControl);
 router.get("/", getProductsControl);
-router.post("/", checkUserAuthenticated, checkRoles(["admin", "premium"]),addProductControl);
+router.post("/",checkUserAuthenticated, checkRoles(["admin", "premium"]),uploadImgProduct.single("image"),addProductControl);
 router.put("/:pid", checkUserAuthenticated, checkRoles(["admin", "premium"]), updateProductControl);
 router.delete("/:pid",checkUserAuthenticated, checkRoles(["admin", "premium"]), deleteProductControl);
 

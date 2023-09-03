@@ -65,7 +65,7 @@ export const getProductsControl = async(req, res)=>{
 export const addProductControl = async (req, res)=>{
     try {
         const {title, description, code, price, status, stock, category} = req.body;
-        if (!title || !description || !code || !price || !status || !stock || !category ) {
+        if (!title || !description || !code || !price || !stock || !category ) {
             CustomError.createError({
                 name: "error al crear el producto",
                 cause: generateProductErrorParams(),
@@ -83,7 +83,11 @@ export const addProductControl = async (req, res)=>{
             return res.status(400).json({status: "error", message: "there is another product using this code"});
         } else {
            
-        newProduct.owner = req.user._id;   
+        newProduct.owner = req.user._id;
+        if (req.file) {
+            newProduct.image = req.file.filename;  
+        };
+        
         const productAdded = await productManager.addProduct(newProduct);
         res.json({status: "success", product: productAdded});
         logger.http(productAdded);

@@ -3,6 +3,9 @@ import localStrategy from "passport-local";
 import { userModel } from "../dao/models/users.model.js";
 import { createHash, validPassword } from "../utils.js";
 import { logger } from "../utils/logger.js";
+import { Usermongo } from "../dao/managers/users.mongo.js";
+
+const userManager = new Usermongo();
 
 
 export const initPassport = ()=>{
@@ -30,11 +33,13 @@ export const initPassport = ()=>{
                     if (userRegisterForm.email.endsWith("@coder.com") && userRegisterForm.password.startsWith("adminCod3r")) {
                         userRegisterForm.role = "admin";
                         userRegisterForm.password = createHash(userRegisterForm.password);
+                        userRegisterForm.avatar = req.file.filename;
                         const userCreated = await userModel.create(userRegisterForm);
-                        console.log(userCreated);
+                        logger.debug(userCreated);
                         return done(null, userCreated);
                     }else{
                         userRegisterForm.password = createHash(userRegisterForm.password);
+                        userRegisterForm.avatar = req.file.filename;
                         const userCreated = await userModel.create(userRegisterForm);
         
                     logger.debug(userCreated);
@@ -63,6 +68,8 @@ export const initPassport = ()=>{
                 if (userDB) {
                     
                     if (validPassword(password, userDB)) {
+                        userDB.last_connection = new Date();
+                        await userManager.updateUser(userDB._id, userDB);
                         return done(null, JSON.parse(JSON.stringify(userDB)));
                     } else{
                         return done(null,false);

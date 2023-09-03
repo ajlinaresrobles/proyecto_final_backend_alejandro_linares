@@ -2,14 +2,16 @@ import { Router } from "express";
 import passport from "passport";
 import { sendRecovery } from "../controllers/sessions.controller.js";
 import { resetPassword } from "../controllers/sessions.controller.js";
+import { Usermongo } from "../dao/managers/users.mongo.js";
+import { uploadProfile } from "../utils.js";
 
-
+const userManager = new Usermongo();
 
 
 const router = Router();
 
 
-router.post("/signup", passport.authenticate("signupStrategy", {failureRedirect: "/api/sessions/failed-signup"}), (req, res)=>{
+router.post("/signup", uploadProfile.single("avatar"), passport.authenticate("signupStrategy", {failureRedirect: "/api/sessions/failed-signup"}), (req, res)=>{
     res.send(`<div> usuario registrado exitosamente, <a href= "/login">Ir al login</a></div>`)
 });
 
@@ -29,20 +31,32 @@ router.get("/failed-login", (req, res)=>{
 
 
 
-router.get("/logout",(req, res)=>{
+router.get("/logout",async(req, res)=>{
+
+    try {
+        
+        req.user.last_connection = new Date();
+        await userManager.updateUser(req.user._id, req.user);
 
     req.logOut(error=>{
 
             if (error) {
                 return res.send(`No se pudo cerrar sesión  <a href= "/products?page=1">Ir al perfil</a>`);
             } else {
+                
                 req.session.destroy(error=>{
                     if (error) {
                         return res.send(`No se pudo cerrar sesión  <a href= "/products?page=1">Ir al perfil</a>`)};
                         res.redirect("/");
                 });
             }
-    })   
+    });
+
+    } catch (error) {
+        res.status(500).json({status: "error", message: error.message});
+        logger.error("mensaje de error");
+    }   
+      
 });
 
 
