@@ -1,4 +1,5 @@
 import { Usermongo } from "../dao/managers/users.mongo.js";
+import { logger } from "../utils/logger.js";
 
 
 const userManager = new Usermongo();
@@ -9,8 +10,14 @@ export const modifyRole = async(req, res)=>{
         const userId = req.params.uid;
         const user = await userManager.getUserById(userId);
         const userRole = user.role;
+        const userStatus = user.status
         if (userRole === "user") {
-            user.role = "premium";
+            if (userStatus !== "completo") {
+                return req.send("no has subido toda la documentación para convertirte en usuario premium");
+            } else if (userStatus === "completo") {
+                user.role = "premium";
+            }
+            
         } else if(userRole === "premium"){
             user.role = "user";
         } else {
@@ -32,7 +39,7 @@ export const uploadDocumentsControl = async(req, res)=>{
         if (!user) {
             return res.json({status: "error", message: "El usuario no existe"});
         }
-        console.log(req.files);
+        logger.debug(req.files);
         const identificacion = req.files["identificacion"][0] || null;
         const domicilio = req.files["domicilio"][0] || null;
         const estadoDeCuenta = req.files["estadoDeCuenta"][0] || null;
@@ -46,7 +53,7 @@ export const uploadDocumentsControl = async(req, res)=>{
         if (estadoDeCuenta) {
             docs.push({name:"estadoDeCuenta", reference: estadoDeCuenta.filename});
         }
-        console.log(docs);
+        logger.debug(docs);
         user.documents = docs;
 
         if (user.documents.length === 3) {
