@@ -1,6 +1,7 @@
 import { Usermongo } from "../dao/managers/users.mongo.js";
 import { logger } from "../utils/logger.js";
-
+import { UsersDto } from "../dao/dto/users.dto.js";
+import { deleteInactivityEmail } from "../utils/message.js";
 
 const userManager = new Usermongo();
 
@@ -68,4 +69,32 @@ export const uploadDocumentsControl = async(req, res)=>{
     } catch (error) {
         res.send(error.message); 
     }
-}
+};
+
+export const getAllUsersController = async(req, res)=>{
+    try {
+        const getUsers = await userManager.getAllUsers();
+        const getDtoUsers = getUsers.map(userDB=> new UsersDto(userDB));
+        res.json({status: "success", data: getDtoUsers});
+    } catch (error) {
+        res.json({status: "error", message: error.message});
+    }
+};
+
+
+export const deleteInactiveUsersControl = async(req, res)=>{
+    try {
+        const getUsers = await userManager.getAllUsers();
+        const getDtoUsers = getUsers.map(userDB=> new UsersDto(userDB));
+        const inactiveUsers = getDtoUsers.filter((element)=>element.ult_conex_en_hrs > 48);
+        inactiveUsers.forEach(element => {
+            deleteInactivityEmail(element.email);
+            console.log(JSON.parse(JSON.stringify(element.id)));
+            userManager.deleteUser(JSON.parse(JSON.stringify(element.id)));
+        });
+        
+        res.json({status: "success", data: inactiveUsers});
+    } catch (error) {
+        res.json({status: "error", message: error.message});
+    }
+};

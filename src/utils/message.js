@@ -35,4 +35,24 @@ export const sendRecoveryEmail = async(userEmail, token)=>{
                 </div>
         `
     })
-}
+};
+
+export const deleteInactivityEmail = async(userEmail)=>{
+  
+    const link = `http://localhost:8080/signup`;
+    
+    await transporter.sendMail({
+        from: "los reyes de las sillas",
+        to: userEmail,
+        subject: "Cuenta eliminada por inactividad",
+        html:`
+                <div>
+                    <h2>Cuenta eliminada</h2>
+                    <p>Hola, tu cuenta fué eliminada por inactividad, si quieres volver a registrarte puedes hacerlo a través del siguiente enlace</p>
+                    <a href="${link}">
+                        <button>Restablecer Cuenta</button>
+                    </a>
+                </div>
+        `
+    })
+};

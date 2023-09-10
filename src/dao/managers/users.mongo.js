@@ -7,6 +7,17 @@ export class Usermongo{
         this.model = userModel;
     };
 
+    async getAllUsers(){
+        try {
+            const data = await this.model.find().lean();
+            
+            return data
+        } catch (error) {
+            throw new Error(`Error al obtener usuarios ${error.message}`);
+        }
+
+    }
+
     async getUserByEmail(emailUser){
         try {
             const user = await this.model.findOne({email:emailUser});
@@ -58,6 +69,15 @@ export class Usermongo{
     };
       
 
+    async deleteUser(id){
+        try {
+            const data = await this.model.findByIdAndDelete(id);
+          
+            return {message: `el usuario con el id ${id} fué eliminado`};
+        } catch (error) {
+            throw new Error(`Error al eliminar el usuario ${error.message}`);
+        }
 
+    };
 
 }

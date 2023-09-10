@@ -22,7 +22,7 @@ router.get("/failed-signup", (req, res)=>{
 
 router.post("/login", passport.authenticate("loginStrategy", {failureRedirect: "/api/sessions/failed-login"}), (req, res)=>{
     // res.redirect("/products?page=1");
-   res.send("login exitoso");
+   res.send(`<div> usuario logueado exitosamente, <a href= "/products?page=1">Ir a los productos</a></div>`);
 });
 
 router.get("/failed-login", (req, res)=>{
