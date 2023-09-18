@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "mocha test/integration.test.js --timeout 10000",
-    "start": "nodemon src/app.js"
+    "start": "node src/app.js"
   },
   "keywords": [],
   "author": "",
