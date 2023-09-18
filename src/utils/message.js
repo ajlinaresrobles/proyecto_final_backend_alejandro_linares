@@ -50,7 +50,27 @@ export const deleteInactivityEmail = async(userEmail)=>{
                     <h2>Cuenta eliminada</h2>
                     <p>Hola, tu cuenta fué eliminada por inactividad, si quieres volver a registrarte puedes hacerlo a través del siguiente enlace</p>
                     <a href="${link}">
-                        <button>Restablecer Cuenta</button>
+                        <button>Ir a la página</button>
+                    </a>
+                </div>
+        `
+    })
+};
+
+export const deletedProductEmail = async(userEmail)=>{
+  
+    const link = `http://localhost:8080/login`;
+    
+    await transporter.sendMail({
+        from: "los reyes de las sillas",
+        to: userEmail,
+        subject: "Producto Eliminado",
+        html:`
+                <div>
+                    <h2>Producto Eliminado</h2>
+                    <p>Hola, tu producto ha sido eliminado de la página, puedes verificarlo a través del siguiente enlace</p>
+                    <a href="${link}">
+                        <button>Ir a la página</button>
                     </a>
                 </div>
         `

@@ -3,8 +3,11 @@ import { CustomError } from "../services/errors/customError.service.js";
 import { generateProductErrorParams } from "../services/errors/productErrorParams.service.js";
 import { EError } from "../enums/Eerror.js";
 import { logger } from "../utils/logger.js";
+import { Usermongo } from "../dao/managers/users.mongo.js";
+import { deletedProductEmail } from "../utils/message.js";
 
 const productManager = new ProductsMongo();
+const userManager = new Usermongo();
 
 
 export const getProductByIdControl = async(req, res)=>{
@@ -128,8 +131,14 @@ export const deleteProductControl = async(req, res)=>{
         const productId = req.params.pid;
         const product = await productManager.getProductById(productId);
        
+
         if(req.user.role === "premium" && JSON.stringify(product.owner) == JSON.stringify(req.user._id) || req.user.role === "admin"){
+          
             const productList = await productManager.deleteProducts(productId);
+            const ownerProduct = await userManager.getUserById(product.owner);
+            if (ownerProduct.role === "premium") {
+                deletedProductEmail(ownerProduct.email);
+            }
             res.json({status: "success", message: "product deleted", product: productList});
             logger.http(productList);
         } else{

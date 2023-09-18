@@ -71,7 +71,7 @@ export const addProductToCartControl = async(req, res)=>{
 };
 
 
-export const deleteProductControl = async(req,res)=>{
+export const deleteProductInCartControl = async(req,res)=>{
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;

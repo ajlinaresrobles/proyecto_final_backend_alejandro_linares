@@ -5,11 +5,15 @@ import { CartsMongo } from "../dao/managers/CartManagerMongo.js";
 import { checkUserAuthenticated, checkRoles } from "../middlewares/auth.js";
 import { logger } from "../utils/logger.js";
 import { resetPassword } from "../controllers/sessions.controller.js";
+import { Usermongo } from "../dao/managers/users.mongo.js";
+import { UsersDto } from "../dao/dto/users.dto.js";
 
 
 // const productManager = new ProductManager("products.json");
 const productManager = new ProductsMongo();
 const cartManager = new CartsMongo();
+const userManager = new Usermongo();
+
 
 const router = Router();
 
@@ -143,6 +147,23 @@ router.get("/loggerTest", (req, res)=>{
     logger.fatal("mensaje de error crítico o fatal");
     
 });
+
+
+router.get("/usersInfo", checkUserAuthenticated, checkRoles(["admin"]), async(req, res)=>{
+
+    try {
+       
+        const getUsers = await userManager.getAllUsers();
+        const getDtoUsers = getUsers.map(userDB=> new UsersDto(userDB));
+      
+       
+        res.render("usersInfo", {getDtoUsers: getDtoUsers});
+        
+    } catch (error) {
+        res.status(500).json({status: "error", message: error.message});
+    }
+});
+
 
 
 export {router as viewsRouter};

@@ -14,11 +14,11 @@ export const modifyRole = async(req, res)=>{
         const userStatus = user.status
         if (userRole === "user") {
             if (userStatus !== "completo") {
-                return req.send("no has subido toda la documentación para convertirte en usuario premium");
+                return res.send("no has subido toda la documentación para convertirte en usuario premium");
             } else if (userStatus === "completo") {
                 user.role = "premium";
             }
-            
+          
         } else if(userRole === "premium"){
             user.role = "user";
         } else {
@@ -97,4 +97,33 @@ export const deleteInactiveUsersControl = async(req, res)=>{
     } catch (error) {
         res.json({status: "error", message: error.message});
     }
+};
+
+export const removeUserControl = async(req,res)=>{
+    try {
+        const userId = req.params.uid;
+        const response = await userManager.deleteUser(userId);
+        res.json({status: "success", message: "usuario eliminado"});
+    } catch (error) {
+        res.status(400).json({status:"error", error:error.message});
+        logger.error("mensaje de error");
+    }
+};
+
+
+export const getUserByIdControl = async(req, res)=>{
+    try {
+        const userId = req.params.uid;
+        const user = await userManager.getUserById(userId);
+        if (user) {
+            res.json({status: "success", user: user});
+            logger.http(user);
+        } else{
+                  res.status(400).json({status: "error", message: "this user does not exist"});
+        }
+    } catch (error) {
+        res.status(500).json({status: "error", message: error.message});
+        logger.error("mensaje de error");
+    }
+
 };
