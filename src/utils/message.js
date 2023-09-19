@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendRecoveryEmail = async(userEmail, token)=>{
-    const link = `http://localhost:8080/reset-password?token=${token}`;
+    const link = `https://proyecto-final-backend-alejandro-linares-3gfg.onrender.com/reset-password?token=${token}`;
 
     await transporter.sendMail({
         from: "los reyes de las sillas",
@@ -39,7 +39,7 @@ export const sendRecoveryEmail = async(userEmail, token)=>{
 
 export const deleteInactivityEmail = async(userEmail)=>{
   
-    const link = `http://localhost:8080/signup`;
+    const link = `https://proyecto-final-backend-alejandro-linares-3gfg.onrender.com/signup`;
     
     await transporter.sendMail({
         from: "los reyes de las sillas",
@@ -59,7 +59,7 @@ export const deleteInactivityEmail = async(userEmail)=>{
 
 export const deletedProductEmail = async(userEmail)=>{
   
-    const link = `http://localhost:8080/login`;
+    const link = `https://proyecto-final-backend-alejandro-linares-3gfg.onrender.com/login`;
     
     await transporter.sendMail({
         from: "los reyes de las sillas",

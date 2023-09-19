@@ -4,12 +4,12 @@ console.log("usersInfo.js");
 
 const removeUser = async(userId)=>{
     console.log(userId);
-    fetch(`http://localhost:8080/api/users/${userId}`, {method: 'DELETE'});
+    fetch(`https://proyecto-final-backend-alejandro-linares-3gfg.onrender.com/api/users/${userId}`, {method: 'DELETE'});
 };
 
 
 const modifyUserRole = async(userId)=>{
     console.log(userId);
-    fetch(`http://localhost:8080/api/users/premium/${userId}`, {method: 'PUT'});
+    fetch(`https://proyecto-final-backend-alejandro-linares-3gfg.onrender.com/api/users/premium/${userId}`, {method: 'PUT'});
 };
 
